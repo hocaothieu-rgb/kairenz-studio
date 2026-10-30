@@ -58,10 +58,10 @@
     fit: false,
     prefers: { family: 'Inter Tight', weight: 800 },
     looks: [
-      { name: 'Hearing room', bg: { type: 'solid', color: '#14181a' },
+      { name: 'Hearing room', bg: { type: 'radial', color: '#3a4a4c', color2: '#07090a' },
         layer: { font: { family: 'Inter Tight', weight: 800 }, type: { size: 0.075, case: 'upper', tracking: 0 },
           fill: { type: 'solid', color: '#f4f6f5' }, params: { fillMode: 'map', mapDark: '#f4f6f6', mapLight: '#2a7680', placement: 'scatter' } } },
-      { name: 'Warm grade', bg: { type: 'solid', color: '#1d140e' },
+      { name: 'Warm grade', bg: { type: 'radial', color: '#4a3424', color2: '#0a0705' },
         layer: { font: { family: 'Inter Tight', weight: 800 }, type: { size: 0.075, case: 'upper' },
           fill: { type: 'solid', color: '#fff6ea' }, params: { fillMode: 'map', mapDark: '#fff6ea', mapLight: '#b5602a', placement: 'sides' } } },
       { name: 'Clean subtitle', bg: { type: 'solid', color: '#0b0b0c' },

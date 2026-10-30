@@ -26,6 +26,7 @@
   // ── Presets: reference set (owner: lead) ──
   var PRESETS_CORE = [
     'js/presets/focus-pull.js', // KAIRENZ: Focus Pull leads the gallery
+    'js/presets/spoken-caption.js', // KAIRENZ: speech captions with a gradient map, second in the gallery
     'js/presets/path-flow.js',
     'js/presets/rise.js',
     'js/presets/stack.js',
@@ -76,7 +77,6 @@
     'js/presets/axis-drift.js',
     'js/presets/anaglyph.js',
     'js/presets/spiral.js',
-    'js/presets/spoken-caption.js',
   ];
 
   // ── Export & embed runtime (owner: export team) ──

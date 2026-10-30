@@ -25,6 +25,7 @@
 
   // ── Presets: reference set (owner: lead) ──
   var PRESETS_CORE = [
+    'js/presets/focus-pull.js', // KAIRENZ: Focus Pull leads the gallery
     'js/presets/path-flow.js',
     'js/presets/rise.js',
     'js/presets/stack.js',
@@ -65,7 +66,6 @@
     'js/presets/sequence.js',
     'js/presets/strobe-cut.js',
     'js/presets/outline-draw.js',
-    'js/presets/focus-pull.js',
     'js/presets/shutter.js',
     'js/presets/zoom-through.js',
     'js/presets/ticker.js',

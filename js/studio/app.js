@@ -17,9 +17,10 @@
   function starterScene() {
     const scene = TM.Scene.defaults();
     scene.name = 'Type in motion';
-    scene.bg = { type: 'solid', color: '#0015ff', color2: '#000000', angle: 90 };
+    scene.bg = { type: 'solid', color: '#0b0b0c', color2: '#000000', angle: 90 };
     scene.layers[0].text = 'TYPE IN MOTION';
-    scene.layers[0].preset = 'path-flow';
+    scene.layers[0].preset = 'focus-pull';
+    scene.layers[0].fill = { type: 'solid', color: '#d4ff3a', color2: '#ffffff', angle: 90, palette: ['#d4ff3a', '#ffffff', '#7a7a7a'] };
     scene.layers[0].font = { family: 'Anton', weight: 400 };
     scene.layers[0].type.size = 0.15;
     return scene;

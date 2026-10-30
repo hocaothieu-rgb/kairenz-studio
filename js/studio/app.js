@@ -14,14 +14,19 @@
   const $ = (sel) => document.querySelector(sel);
   const REMIX_KEY = 'kairenz.remixLocks';
 
-  function starterScene() {
+  // The house display face, when it is installed on this computer (it is never served).
+  const HOUSE_FONT = 'HCT Bootzy TM';
+  let houseOk = false;
+  const probeHouse = () => TM.fonts.probeLocal(HOUSE_FONT).then((ok) => (houseOk = !!ok));
+
+  function starterScene(family) {
     const scene = TM.Scene.defaults();
     scene.name = 'Type in motion';
     scene.bg = { type: 'solid', color: '#0b0b0c', color2: '#000000', angle: 90 };
     scene.layers[0].text = 'TYPE IN MOTION';
     scene.layers[0].preset = 'focus-pull';
     scene.layers[0].fill = { type: 'solid', color: '#d4ff3a', color2: '#ffffff', angle: 90, palette: ['#d4ff3a', '#ffffff', '#7a7a7a'] };
-    scene.layers[0].font = { family: 'Anton', weight: 400 };
+    scene.layers[0].font = { family: family || 'Anton', weight: 400 };
     scene.layers[0].type.size = 0.15;
     return scene;
   }
@@ -40,7 +45,10 @@
       const missing = [...new Set(saved.layers.map((l) => l && l.font && l.font.family).filter((f) => typeof f === 'string' && !TM.fonts.has(f)))];
       if (missing.length) setTimeout(() => toast(missing.join(', ') + ' isn’t available in this browser, so Anton is used instead.', 'error', 7000), 600);
     }
-    return saved || starterScene();
+    const probe = probeHouse();
+    if (saved) return saved;
+    try { await withTimeout(probe, 1500); } catch (e) { /* not installed */ }
+    return starterScene(houseOk ? HOUSE_FONT : 'Anton');
   }
 
   // ───────────────────────────── toasts ─────────────────────────────
@@ -448,7 +456,7 @@
 
     projectMenu(anchor) {
       UI.menu(anchor, [
-        { label: 'New project', icon: 'file', run: () => { this.store.replace(starterScene(), { label: 'New project' }); toast('Started a new project', 'info', 4000, { label: 'Undo', run: () => this.store.undo() }); } },
+        { label: 'New project', icon: 'file', run: () => { this.store.replace(starterScene(houseOk ? HOUSE_FONT : 'Anton'), { label: 'New project' }); toast('Started a new project', 'info', 4000, { label: 'Undo', run: () => this.store.undo() }); } },
         { label: 'Open project file…', icon: 'folder', run: () => this.fileInput.click() },
         { label: 'Save project file', icon: 'download', hint: 'JSON, includes custom fonts', run: () => this.saveFile() },
         '-',

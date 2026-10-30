@@ -280,7 +280,7 @@
 
         function renderList() {
           const current = o.get();
-          items = TM.FONTS.filter(matches);
+          items = TM.FONTS.filter((f) => matches(f) && !TM.fonts.isLocalMissing(f.family));
           const frag = document.createDocumentFragment();
           let lastCat = null;
           items.forEach((f, i) => {

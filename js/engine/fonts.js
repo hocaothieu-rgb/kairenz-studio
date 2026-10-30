@@ -31,7 +31,20 @@
     'HCT Cossette Texte': { 400: 'fonts/hct/HCT-CossetteTexte-Regular.woff2', 700: 'fonts/hct/HCT-CossetteTexte-Bold.woff2' },
   };
 
+  // Licensed fonts the site never serves: drawn only when installed on the viewer's computer
+  // (CSS local()), e.g. the team's HCT Bootzy. Hidden from the picker where they're missing.
+  const LOCAL = {
+    'HCT Bootzy TM': ['HCT_Bootzy TM Regular Regular', 'HCTBootzyTMRegular-Regular', 'HCT_Bootzy TM Regular'],
+    'HCT Bootzy New TM': ['HCT_Bootzy New TM Regular Regular', 'HCTBootzyNewTMRegular-Regular', 'HCT_Bootzy New TM Regular'],
+    'HCT Bootzy Condensed TM': ['HCT_Bootzy Condensed TM Regular Regular', 'HCTBootzyCondensedTMRegular-Regular', 'HCT_Bootzy Condensed TM Regular'],
+    'HCT Bootzy Condensed New TM': ['HCT_Bootzy Condensed New TM Regular Regular', 'HCTBootzyCondensedNewTMRegular-Regular', 'HCT_Bootzy Condensed New TM Regular'],
+  };
+
   const CATALOGUE = [
+    ['HCT Bootzy TM', 'Display', 400, 400],
+    ['HCT Bootzy New TM', 'Display', 400, 400],
+    ['HCT Bootzy Condensed TM', 'Condensed', 400, 400],
+    ['HCT Bootzy Condensed New TM', 'Condensed', 400, 400],
     ['HCT Cossette Titre', 'Display', 400, 700, [400, 700]],
     ['HCT Cossette Texte', 'Grotesk', 400, 700, [400, 700]],
     // Condensed
@@ -149,6 +162,7 @@
       fallback: FALLBACK[cat] || 'sans-serif',
       custom: false,
       hosted: HOSTED[family] || null,
+      local: LOCAL[family] || null,
     };
   });
   const byFamily = new Map(FONTS.map((f) => [f.family, f]));
@@ -208,7 +222,7 @@
   }
 
   function injectStylesheet(families) {
-    const list = families.map(get).filter((f) => f && !f.custom && !f.hosted);
+    const list = families.map(get).filter((f) => f && !f.custom && !f.hosted && !f.local);
     if (!list.length || !hasDOM) return Promise.resolve();
     const query = list.map((f) => 'family=' + familyQuery(f)).join('&');
     if (linkPromises.has(query)) return linkPromises.get(query);
@@ -230,6 +244,18 @@
 
   function get(family) {
     return byFamily.get(family) || instances.get(family) || null;
+  }
+
+  const localOk = new Set(); // local-only families found on this computer
+  const localPromises = new Map();
+  /** Register a local-only family from the fonts installed on this computer. Resolves true if found. */
+  function loadLocal(f) {
+    if (localPromises.has(f.family)) return localPromises.get(f.family);
+    const src = f.local.map((n) => `local('${n.replace(/'/g, '')}')`).join(', ');
+    const face = new FontFace(f.family, src, { weight: '400' });
+    const p = face.load().then((ff) => { document.fonts.add(ff); localOk.add(f.family); bump(); return true; }).catch(() => false);
+    localPromises.set(f.family, p);
+    return p;
   }
 
   const hostedPromises = new Map(); // family → Promise (all its weights registered)
@@ -477,7 +503,7 @@
     const sample = text ? 'AaBb09' + String(text).slice(0, 200) : 'AaBb09';
     const key = `${family}|${f.variable ? 'var' : w}|${sample}`;
     if (facePromises.has(key)) return timeout(facePromises.get(key), waitMs, false);
-    const ready = f.instance ? addInstanceFaces(f) : f.custom ? Promise.resolve() : f.hosted ? loadHosted(f) : injectStylesheet([family]);
+    const ready = f.instance ? addInstanceFaces(f) : f.custom ? Promise.resolve() : f.hosted ? loadHosted(f) : f.local ? loadLocal(f) : injectStylesheet([family]);
     const loaded = ready
       .then(() => document.fonts.load(`${w} 64px ${cssFamily(family)}`, sample))
       .then((faces) => {
@@ -494,7 +520,8 @@
   /** Load the stylesheet for every catalogue family (used by the font picker previews). */
   function preloadCatalogue() {
     FONTS.filter((f) => f.hosted).forEach(loadHosted);
-    const names = FONTS.filter((f) => !f.custom && !f.hosted).map((f) => f.family);
+    FONTS.filter((f) => f.local).forEach(loadLocal);
+    const names = FONTS.filter((f) => !f.custom && !f.hosted && !f.local).map((f) => f.family);
     const chunks = [];
     for (let i = 0; i < names.length; i += 12) chunks.push(injectStylesheet(names.slice(i, i + 12)));
     return Promise.all(chunks);
@@ -595,7 +622,10 @@
     ensure,
     preloadCatalogue,
     addCustom,
-    cssUrl: (families) => `https://fonts.googleapis.com/css2?${families.map(get).filter((f) => f && !f.custom && !f.hosted).map((f) => 'family=' + familyQuery(f)).join('&')}&display=swap`,
+    /** Local-only fonts: probe once; isLocalMissing(family) is true after a failed probe. */
+    probeLocal: (family) => { const f = get(family); return f && f.local && hasDOM && typeof FontFace !== 'undefined' ? loadLocal(f) : Promise.resolve(false); },
+    isLocalMissing: (family) => { const f = get(family); return !!(f && f.local && localPromises.has(family) && !localOk.has(family)); },
+    cssUrl: (families) => `https://fonts.googleapis.com/css2?${families.map(get).filter((f) => f && !f.custom && !f.hosted && !f.local).map((f) => 'family=' + familyQuery(f)).join('&')}&display=swap`,
     /** Increments whenever any font finishes loading; renderers include it in layout cache keys. */
     version: () => version,
     onChange: (fn) => (listeners.add(fn), () => listeners.delete(fn)),

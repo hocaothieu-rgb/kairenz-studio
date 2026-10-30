@@ -25,13 +25,18 @@
 
   // ── Presets: reference set (owner: lead) ──
   var PRESETS_CORE = [
-    'js/presets/focus-pull.js', // KAIRENZ: Focus Pull leads the gallery
-    'js/presets/spoken-caption.js', // KAIRENZ: speech captions with a gradient map, second in the gallery
-    'js/presets/path-flow.js',
+    'js/presets/motion-kit.js', // shared helpers (no presets); the favourites below use them
+    // KAIRENZ favourites first (the team's go-to effects), then the rest of the set
+    'js/presets/focus-pull.js',
+    'js/presets/spoken-caption.js',
     'js/presets/rise.js',
-    'js/presets/stack.js',
     'js/presets/axis-wave.js',
     'js/presets/phrase-morph.js',
+    'js/presets/axis-drift.js',
+    'js/presets/split-flap.js',
+    'js/presets/scramble.js',
+    'js/presets/path-flow.js',
+    'js/presets/stack.js',
     'js/presets/particles.js',
   ];
 
@@ -55,10 +60,7 @@
 
   // ── Presets: reveal, glitch & dimensional family (owner: preset team B) ──
   var PRESETS_B = [
-    'js/presets/motion-kit.js',
-    'js/presets/scramble.js',
     'js/presets/typewriter.js',
-    'js/presets/split-flap.js',
     'js/presets/assemble.js',
     'js/presets/pop.js',
     'js/presets/glitch.js',
@@ -74,7 +76,6 @@
     'js/presets/floor-plane.js',
     'js/presets/ink-pen.js',
     'js/presets/odometer.js',
-    'js/presets/axis-drift.js',
     'js/presets/anaglyph.js',
     'js/presets/spiral.js',
   ];

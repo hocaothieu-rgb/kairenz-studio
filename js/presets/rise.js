@@ -26,10 +26,12 @@
       L.lines.forEach((line) => {
         if (P.mask) {
           // Clip to this line's cap-height band (plus room for descenders) in frame space.
+          // The headroom covers stacked diacritics on capitals (Vietnamese Ờ Ỷ Ầ in condensed faces reach close to 1 em
+          // above cap height), which a tighter band would shave off.
           f.identity();
           ctx.save();
           ctx.beginPath();
-          const top = f.cy + line.y - L.capH - L.sizePx * 0.12;
+          const top = f.cy + line.y - L.capH - L.sizePx * 1.0;
           const bottom = f.cy + line.y + L.descent * 0.9;
           ctx.rect(0, top, f.W, bottom - top);
           ctx.clip();

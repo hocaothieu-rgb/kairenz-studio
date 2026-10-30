@@ -76,6 +76,7 @@
     'js/presets/axis-drift.js',
     'js/presets/anaglyph.js',
     'js/presets/spiral.js',
+    'js/presets/spoken-caption.js',
   ];
 
   // ── Export & embed runtime (owner: export team) ──

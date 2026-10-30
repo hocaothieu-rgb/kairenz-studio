@@ -20,9 +20,9 @@
   'use strict';
   const { clamp } = TM.math;
 
-  // Demo footage for the preview: 4 s of a Pexels clip (6878215, free to use) packed as a
+  // Demo footage for the preview: 4 s of a Pexels clip (17017654, a talk on stage, free to use) packed as a
   // sprite sheet, so every render (preview, export, embed) draws the same frame for a time.
-  const SPRITE = { cols: 8, rows: 5, fw: 640, fh: 360, fps: 10, frames: 40, focusX: 0.4 };
+  const SPRITE = { cols: 8, rows: 5, fw: 640, fh: 360, fps: 10, frames: 40, focusX: 0.45 };
   let IMG = null, READY = null;
   function loadBackdrop() {
     if (READY) return READY;
@@ -88,10 +88,10 @@
     looks: [
       { name: 'Hearing room', bg: { type: 'radial', color: '#3a4a4c', color2: '#07090a' },
         layer: { font: { family: 'Inter Tight', weight: 800 }, type: { size: 0.075, case: 'upper', tracking: 0 },
-          fill: { type: 'solid', color: '#f4f6f5' }, params: { backdrop: 'footage', fillMode: 'map', mapDark: '#f4f6f6', mapLight: '#2a7680', mapBalance: 0.22, mapContrast: 2.2, placement: 'scatter', spread: 0.1 }, anchor: { x: 0.68, y: 0.42 } } },
+          fill: { type: 'solid', color: '#f4f6f5' }, params: { backdrop: 'footage', fillMode: 'map', mapDark: '#f4f6f6', mapLight: '#2a7680', mapBalance: 0.42, mapContrast: 2.4, placement: 'scatter', spread: 0.08, backdropDim: 0.12 }, anchor: { x: 0.5, y: 0.53 } } },
       { name: 'Warm grade', bg: { type: 'radial', color: '#4a3424', color2: '#0a0705' },
         layer: { font: { family: 'Inter Tight', weight: 800 }, type: { size: 0.075, case: 'upper' },
-          fill: { type: 'solid', color: '#fff6ea' }, params: { backdrop: 'footage', fillMode: 'map', mapDark: '#fff6ea', mapLight: '#b5602a', mapBalance: 0.22, mapContrast: 2.2, placement: 'scatter', spread: 0.1 }, anchor: { x: 0.68, y: 0.42 } } },
+          fill: { type: 'solid', color: '#fff6ea' }, params: { backdrop: 'footage', fillMode: 'map', mapDark: '#fff6ea', mapLight: '#b5602a', mapBalance: 0.42, mapContrast: 2.4, placement: 'scatter', spread: 0.08, backdropDim: 0.12 }, anchor: { x: 0.5, y: 0.53 } } },
       { name: 'Clean subtitle', bg: { type: 'solid', color: '#0b0b0c' },
         layer: { font: { family: 'Inter Tight', weight: 700 }, type: { size: 0.065, case: 'none' },
           fill: { type: 'solid', color: '#ffffff' }, params: { backdrop: 'none', fillMode: 'solid', placement: 'anchor', entry: 'cut' } } },

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="normal">
+<title>KAIRENZ player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--
+  Chromeless KAIRENZ player for iframes.
+  embed.html#c=<TM.Scene.encode(scene)>&autoplay=0|1&loop=0|1&controls=0|1&bg=transparent|RRGGBB&fit=contain|cover&start=<s>
+             &text=<layer 1 text>&text2=…&text6=…&trigger=hover
+  Defaults: autoplay=1, loop=1, controls=0, fit=contain. The scene is validated by TM.Scene.normalize().
+  text replaces a layer's text ("\n" breaks the line); trigger=hover plays while the pointer is over it.
+  loop=0 plays once and stops on the last frame with no overlay; with controls=1 the corner button
+  turns into Replay.
+  postMessage API (from the embedding page): { kairenz: 'play' | 'pause' | 'toggle' | 'seek', time },
+  and { kairenz: 'progress', value: 0..1 } to scrub (e.g. from the parent page's scroll position).
+  Events posted to the parent: { kairenz: 'ready' | 'play' | 'pause' | 'ended' | 'error', duration }.
+-->
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+  kairenz-player { position: fixed; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; }
+  noscript { position: fixed; inset: 0; display: grid; place-items: center; font: 14px system-ui, sans-serif; color: #a6a6b2; background: #111115; }
+</style>
+</head>
+<body>
+<kairenz-player id="player"></kairenz-player>
+<noscript>This animation needs JavaScript.</noscript>
+<script src="js/boot.js" data-groups="engine,presets"></script>
+<script src="player.js"></script>
+<script>
+(function () {
+  'use strict';
+  var player = document.getElementById('player');
+  var current = null;
+
+  function params() {
+    var out = {};
+    (location.search.slice(1) + '&' + location.hash.slice(1)).split('&').forEach(function (kv) {
+      if (!kv) return;
+      var i = kv.indexOf('=');
+      var k = i < 0 ? kv : kv.slice(0, i), v = i < 0 ? '' : kv.slice(i + 1);
+      try { v = decodeURIComponent(v); } catch (e) { /* keep raw */ }
+      out[k] = v;
+    });
+    return out;
+  }
+  function flag(v, d) { return v == null || v === '' ? d : !/^(0|false|no|off)$/i.test(v); }
+  function attr(name, value) {
+    if (value === null || value === false) player.removeAttribute(name);
+    else player.setAttribute(name, value === true ? '' : value);
+  }
+
+  function apply() {
+    var p = params();
+    var bg = (p.bg || '').replace(/^#/, '');
+    attr('autoplay', flag(p.autoplay, true));
+    attr('loop', flag(p.loop, true));
+    attr('controls', flag(p.controls, false));
+    attr('fit', p.fit === 'cover' ? 'cover' : 'contain');
+    attr('bg', bg === 'transparent' ? 'transparent' : /^[0-9a-f]{6}$/i.test(bg) ? '#' + bg : null);
+    attr('start', p.start && isFinite(+p.start) ? String(Math.max(0, +p.start)) : null);
+    attr('trigger', p.trigger === 'hover' ? 'hover' : null);
+    ['text', 'text2', 'text3', 'text4', 'text5', 'text6'].forEach(function (k, i) {
+      attr(i ? 'text-' + (i + 1) : 'text', typeof p[k] === 'string' ? p[k].slice(0, 400) : null);
+    });
+    var scene = p.c || p.s || '';
+    if (scene !== current) {
+      current = scene;
+      if (scene) player.setAttribute('scene', scene);
+      else player.showError('No animation here yet', 'This player needs a scene: copy an embed code from KAIRENZ.');
+    }
+  }
+
+  function post(type) {
+    if (window.parent === window) return;
+    try { window.parent.postMessage({ kairenz: type, duration: player.duration, time: player.currentTime }, '*'); } catch (e) { /* detached */ }
+  }
+  ['ready', 'play', 'pause', 'ended', 'error'].forEach(function (type) { player.addEventListener(type, function () { post(type); }); });
+
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (!d || typeof d !== 'object' || typeof d.kairenz !== 'string') return;
+    if (d.kairenz === 'play') player.play();
+    else if (d.kairenz === 'pause') player.pause();
+    else if (d.kairenz === 'toggle') player.toggle();
+    else if (d.kairenz === 'seek' && isFinite(+d.time)) player.currentTime = +d.time;
+    else if (d.kairenz === 'progress' && isFinite(+d.value) && isFinite(player.duration)) {
+      if (!player.paused) player.pause();
+      player.currentTime = Math.min(1, Math.max(0, +d.value)) * Math.max(0, player.duration - 1 / 60);
+    }
+  });
+
+  window.addEventListener('hashchange', apply);
+  apply();
+})();
+</script>
+</body>
+</html>

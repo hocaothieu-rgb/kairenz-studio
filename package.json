@@ -1,0 +1,22 @@
+{
+  "name": "kairenz",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Kinetic typography studio: animate type, shape its motion path, embed it on the web or export MP4.",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx --yes http-server . -p 8080 -c-1",
+    "test": "npm run test:smoke && npm run test:export && npm run test:embed && npm run test:sweep && npm run test:studio",
+    "test:smoke": "node tests/smoke.mjs",
+    "test:export": "node tests/after-effects.mjs && node tests/export.mjs",
+    "test:ae": "node tests/after-effects.mjs",
+    "test:embed": "node tests/embed.mjs && node tests/embed-live.mjs",
+    "test:sweep": "node tests/sweep.mjs && node tests/motion.mjs",
+    "test:studio": "node tests/studio.mjs",
+    "test:motion": "node tests/motion.mjs",
+    "test:flash": "node tests/flashes-a.mjs all"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

@@ -200,6 +200,10 @@ npm test         # headless smoke tests: determinism, loop seams, perf, edge cas
 ```
 
 
+## Credits
+
+The Spoken Caption preview backdrop (`assets/caption-backdrop.jpg`) is 4 seconds of Pexels video 6878215, used under the Pexels license.
+
 ## License
 
 MIT. Original work © 2026 Mark Do (TYPOMAN); fork © 2026 Kairenz. See `LICENSE`.

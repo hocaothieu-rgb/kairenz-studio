@@ -172,6 +172,7 @@ TM.registerPreset({
   setup(f) { return cache },  // optional; re-run only when text/font/type/params/path/size change
   render(f) { … },
   fonts(layer, scene) { return [family, …] },  // optional: extra font instances render() draws with
+  assets(layer, scene) { return promise },     // optional: images render() draws (TM.prepare waits, bounded)
   looks: [                    // optional, up to 8 curated starting points shown in the gallery
     { name: 'Neon Night', bg: { type: 'solid', color: '#07000f' },
       layer: { font: { family: 'Monoton' }, fill: { type: 'palette', palette: ['#ff00e5', '#00f0ff'] },

@@ -1021,6 +1021,13 @@
           if (opts.extras !== 'background') jobs.push(job);
         });
       }
+      // Optional preset assets (images a preset draws, e.g. Spoken Caption's demo footage).
+      // Bounded like fonts, so a missing file never blocks a render.
+      if (preset && typeof preset.assets === 'function') {
+        let job = null;
+        try { job = preset.assets(l, scene); } catch (e) { console.warn('[TM] preset.assets failed:', e); }
+        if (job) jobs.push(Promise.race([Promise.resolve(job).catch(() => null), new Promise((r) => setTimeout(r, opts.timeout || 15000))]));
+      }
     });
     return Promise.all(jobs).then(() => scene);
   };

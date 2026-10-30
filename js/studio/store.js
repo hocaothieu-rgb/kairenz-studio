@@ -13,7 +13,7 @@
 (function (TM) {
   'use strict';
   const Studio = (TM.Studio = TM.Studio || {});
-  const STORAGE_KEY = 'kairenz.v4.scene';
+  const STORAGE_KEY = 'kairenz.v5.scene'; // v5: everyone starts once from the neon-on-black Focus Pull scene
   const HISTORY_MAX = 150;
 
   function safeStorage(fn, fallback) {

@@ -457,7 +457,12 @@
       s.size = { w: TW, h: TH };
       if (layer.path && layer.path.preset) layer.path = TM.Path.preset(layer.path.preset, TW / TH);
       layer.fx.blur = 0;
-      if (s.bg.type === 'transparent') { s.bg.type = 'solid'; s.bg.color = '#16161a'; }
+      // KAIRENZ house style for preset cards: neon lime on near-black, whatever the stage holds,
+      // so the gallery reads as one set. Look cards keep their own colours (that is their point).
+      s.bg = { type: 'solid', color: '#0b0b0c', color2: '#000000', angle: 90 };
+      s.post = { grain: 0, vignette: 0 };
+      layer.fill = { type: 'solid', color: '#d4ff3a', color2: '#ffffff', angle: 90, palette: ['#d4ff3a', '#ffffff', '#7a7a7a'] };
+      layer.stroke = Object.assign({}, layer.stroke, { mode: 'none' });
       return TM.Scene.normalize(s);
     }
 

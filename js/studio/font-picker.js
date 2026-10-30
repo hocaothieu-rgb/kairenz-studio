@@ -346,7 +346,8 @@
 
         renderChips();
         renderList();
-        body.append(h('div', { class: 'fp-top' }, h('div', { class: 'search-wrap' }, UI.icon('search'), search), chips), list, empty, h('div', { class: 'fp-foot' }, upload, note, file));
+        const hct = h('a', { class: 'fp-hct', href: 'fonts/hct/HCT-Cossette-fonts.zip', download: '' }, UI.icon('download'), h('span', null, 'Download the HCT Cossette fonts'), h('small', null, 'Vietnamese · OTF · OFL'));
+        body.append(h('div', { class: 'fp-top' }, h('div', { class: 'search-wrap' }, UI.icon('search'), search), chips), list, empty, h('div', { class: 'fp-foot' }, upload, hct, note, file));
         // Re-measure once web fonts swap in (names change width).
         offFonts = TM.fonts.onChange(() => { if (!api.closed) api.reposition(); });
       },

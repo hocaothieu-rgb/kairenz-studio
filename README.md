@@ -202,6 +202,9 @@ npm test         # headless smoke tests: determinism, loop seams, perf, edge cas
 
 ## Credits
 
+HCT Cossette Titre and HCT Cossette Texte (`fonts/hct/`) are Kairenz's Vietnamese extension of Cossette (Cossette Communication, SIL Open Font License 1.1, see `fonts/hct/OFL.txt`). They are listed first in the font picker, and the picker links the OTF zip for desktop use.
+
+
 The Spoken Caption preview backdrop (`assets/caption-backdrop.jpg`) is 4 seconds of Pexels video 17017654, used under the Pexels license.
 
 ## License

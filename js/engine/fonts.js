@@ -24,7 +24,16 @@
   // axes: the other variable axes KAIRENZ drives, by tag: wdth: [min, max] (%), opsz: [min, max],
   // and any other registered or custom axis (slnt, GRAD, XROT, YEAR, MORF, …) as
   // [min, max, default]. All of them draw through instances (see resolve).
+  // Fonts served from this site (fonts/hct/, OFL): Kairenz's Vietnamese extension of Cossette.
+  // weight → file; they load through FontFace instead of the Google css2 API.
+  const HOSTED = {
+    'HCT Cossette Titre': { 400: 'fonts/hct/HCT-CossetteTitre-Regular.woff2', 700: 'fonts/hct/HCT-CossetteTitre-Bold.woff2' },
+    'HCT Cossette Texte': { 400: 'fonts/hct/HCT-CossetteTexte-Regular.woff2', 700: 'fonts/hct/HCT-CossetteTexte-Bold.woff2' },
+  };
+
   const CATALOGUE = [
+    ['HCT Cossette Titre', 'Display', 400, 700, [400, 700]],
+    ['HCT Cossette Texte', 'Grotesk', 400, 700, [400, 700]],
     // Condensed
     ['Anton', 'Condensed', 400, 400],
     ['Bebas Neue', 'Condensed', 400, 400],
@@ -139,6 +148,7 @@
       features: featuresOf(family),
       fallback: FALLBACK[cat] || 'sans-serif',
       custom: false,
+      hosted: HOSTED[family] || null,
     };
   });
   const byFamily = new Map(FONTS.map((f) => [f.family, f]));
@@ -198,7 +208,7 @@
   }
 
   function injectStylesheet(families) {
-    const list = families.map(get).filter((f) => f && !f.custom);
+    const list = families.map(get).filter((f) => f && !f.custom && !f.hosted);
     if (!list.length || !hasDOM) return Promise.resolve();
     const query = list.map((f) => 'family=' + familyQuery(f)).join('&');
     if (linkPromises.has(query)) return linkPromises.get(query);
@@ -220,6 +230,22 @@
 
   function get(family) {
     return byFamily.get(family) || instances.get(family) || null;
+  }
+
+  const hostedPromises = new Map(); // family → Promise (all its weights registered)
+  /** Register a site-hosted family's faces (one FontFace per weight file). Never rejects. */
+  function loadHosted(f) {
+    if (hostedPromises.has(f.family)) return hostedPromises.get(f.family);
+    const base = (typeof window !== 'undefined' && window.TM_MANIFEST && window.TM_MANIFEST.base) || './';
+    const root = typeof location !== 'undefined' ? new URL(base, location.href) : null;
+    const jobs = Object.entries(f.hosted).map(([w, file]) => {
+      const url = root ? new URL(file, root).href : file;
+      const face = new FontFace(f.family, `url(${url}) format('woff2')`, { weight: String(w), display: 'swap' });
+      return face.load().then((ff) => { document.fonts.add(ff); }).catch(() => console.warn('[TM.fonts] could not load', url));
+    });
+    const p = Promise.all(jobs).then(() => bump());
+    hostedPromises.set(f.family, p);
+    return p;
   }
 
   // ───────────────────────────── variable-axis instances ─────────────────────────────
@@ -451,7 +477,7 @@
     const sample = text ? 'AaBb09' + String(text).slice(0, 200) : 'AaBb09';
     const key = `${family}|${f.variable ? 'var' : w}|${sample}`;
     if (facePromises.has(key)) return timeout(facePromises.get(key), waitMs, false);
-    const ready = f.instance ? addInstanceFaces(f) : f.custom ? Promise.resolve() : injectStylesheet([family]);
+    const ready = f.instance ? addInstanceFaces(f) : f.custom ? Promise.resolve() : f.hosted ? loadHosted(f) : injectStylesheet([family]);
     const loaded = ready
       .then(() => document.fonts.load(`${w} 64px ${cssFamily(family)}`, sample))
       .then((faces) => {
@@ -467,7 +493,8 @@
 
   /** Load the stylesheet for every catalogue family (used by the font picker previews). */
   function preloadCatalogue() {
-    const names = FONTS.filter((f) => !f.custom).map((f) => f.family);
+    FONTS.filter((f) => f.hosted).forEach(loadHosted);
+    const names = FONTS.filter((f) => !f.custom && !f.hosted).map((f) => f.family);
     const chunks = [];
     for (let i = 0; i < names.length; i += 12) chunks.push(injectStylesheet(names.slice(i, i + 12)));
     return Promise.all(chunks);
@@ -568,7 +595,7 @@
     ensure,
     preloadCatalogue,
     addCustom,
-    cssUrl: (families) => `https://fonts.googleapis.com/css2?${families.map(get).filter((f) => f && !f.custom).map((f) => 'family=' + familyQuery(f)).join('&')}&display=swap`,
+    cssUrl: (families) => `https://fonts.googleapis.com/css2?${families.map(get).filter((f) => f && !f.custom && !f.hosted).map((f) => 'family=' + familyQuery(f)).join('&')}&display=swap`,
     /** Increments whenever any font finishes loading; renderers include it in layout cache keys. */
     version: () => version,
     onChange: (fn) => (listeners.add(fn), () => listeners.delete(fn)),

@@ -871,3 +871,9 @@ body.clean .clean-hint.show, body.clean .clean-hint:hover, body.clean .clean-hin
 /* Motion: stagger distribution preview (ticks = start times, hue = order) */
 .spread-row { min-height: 22px; }
 .spread-preview { width: 100%; height: 22px; display: block; border-radius: 5px; background: var(--panel-2); }
+
+/* KAIRENZ: link to the hosted HCT Cossette font files, under the upload button */
+.fp-hct { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding: 6px 10px; border-radius: 8px; color: var(--text-dim, #9aa0a6); font-size: 12px; text-decoration: none; }
+.fp-hct:hover { color: var(--text, #fff); background: rgba(255, 255, 255, 0.05); }
+.fp-hct svg { width: 14px; height: 14px; flex: none; }
+.fp-hct small { margin-left: auto; opacity: 0.7; font-size: 11px; }

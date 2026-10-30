@@ -75,7 +75,7 @@
       TM.P.range('entryDur', 'Entry length (s)', 0.03, 0.4, 0.01, 0.1, { group: 'Timing', showIf: { entry: ['pop', 'focus', 'slide'] } }),
       TM.P.select('placement', 'Placement', [['anchor', 'On the anchor'], ['scatter', 'Scatter near speaker'], ['sides', 'Alternate sides']], 'scatter', { group: 'Layout' }),
       TM.P.range('spread', 'Spread', 0, 0.5, 0.01, 0.16, { group: 'Layout', showIf: { placement: ['scatter', 'sides'] }, hint: 'How far phrases wander from the anchor' }),
-      TM.P.select('fillMode', 'Fill', [['map', 'Gradient map (what is beneath)'], ['solid', 'Layer fill']], 'map', { group: 'Gradient map' }),
+      TM.P.select('fillMode', 'Fill', [['map', 'Gradient map (what is beneath)'], ['solid', 'Layer fill']], 'map', { group: 'Gradient map', hint: 'Shines over darker footage: letters read white with a tint where the picture is bright' }),
       TM.P.color('mapDark', 'Shadows become', '#f4f6f6', { group: 'Gradient map', showIf: { fillMode: 'map' } }),
       TM.P.color('mapLight', 'Highlights become', '#2a7680', { group: 'Gradient map', showIf: { fillMode: 'map' } }),
       TM.P.range('mapContrast', 'Contrast', 0.5, 3, 0.01, 1.4, { group: 'Gradient map', showIf: { fillMode: 'map' }, hint: 'Steeper ramp between the two colours' }),

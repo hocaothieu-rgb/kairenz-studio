@@ -20,7 +20,7 @@
   const Studio = (TM.Studio = TM.Studio || {});
   const X = TM.Export;
   const h = Studio.h;
-  const CANONICAL = ''; // no public deployment yet: embed codes point at wherever the studio runs
+  const CANONICAL = 'https://hocaothieu-rgb.github.io/kairenz-studio/';
 
   /** Base URL that embed codes should point at, plus whether it differs from where we run. */
   Studio.publicBase = function () {

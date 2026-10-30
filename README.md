@@ -4,7 +4,7 @@ Make animated typography for your projects, right in the browser. Type your word
 a motion, **shape the path the type travels on**, then **embed it on any website** or
 **download an MP4**.
 
-Run it locally with `./start.sh` (http://127.0.0.1:4321).
+**[Open the studio →](https://hocaothieu-rgb.github.io/kairenz-studio/)** · or run it locally with `./start.sh` (http://127.0.0.1:4321).
 
 KAIRENZ is a fork of [TYPOMAN](https://github.com/markdo27/typoman) by Mark Do, used under the MIT License (see `LICENSE`).
 
@@ -118,10 +118,10 @@ layer structure and generated expressions against an API test double.
 
 ```html
 <!-- iframe: the scene travels in the URL hash -->
-<iframe src="https://YOUR-HOST/kairenz/embed.html#c=…" style="border:0;width:100%;aspect-ratio:16/9" title="Animated type"></iframe>
+<iframe src="https://hocaothieu-rgb.github.io/kairenz-studio/embed.html#c=…" style="border:0;width:100%;aspect-ratio:16/9" title="Animated type"></iframe>
 
 <!-- web component -->
-<script src="https://YOUR-HOST/kairenz/player.js" defer></script>
+<script src="https://hocaothieu-rgb.github.io/kairenz-studio/player.js" defer></script>
 <kairenz-player scene="…" autoplay loop></kairenz-player>
 ```
 
